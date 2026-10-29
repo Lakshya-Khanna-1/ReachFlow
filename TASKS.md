@@ -1,7 +1,7 @@
 # ReachFlow build checklist
 
 - [x] Task 0 — Scaffold, rules and launchers
-- [ ] Task 1 — Data model and core types
+- [x] Task 1 — Data model and core types
 - [ ] Task 2 — Settings, secrets and setup
 - [ ] Task 3 — LLM providers
 - [ ] Task 4 — Ingestion

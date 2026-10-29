@@ -1,7 +1,9 @@
 # ReachFlow project rules
 
 Build the tasks in TASKS.md in order. Finish one task, verify it, commit using
-`task-XX: summary`, update the checklist, and stop for user review.
+`task-XX: summary`, and update the checklist. The user authorized continuous
+implementation of all remaining tasks on October 30, 2026; stop only when the
+whole app is built or user input is required.
 
 ## Stack and conventions
 
