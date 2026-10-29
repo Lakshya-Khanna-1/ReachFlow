@@ -24,3 +24,64 @@ a:focus-visible {
 ::selection {
   background: #065f46;
 }
+.panel {
+  border: 1px solid #ffffff1a;
+  border-radius: 8px;
+  padding: 24px;
+  background: #101012;
+}
+.field {
+  display: block;
+  width: 100%;
+  background: #18181b;
+  border: 1px solid #ffffff1a;
+  border-radius: 5px;
+  padding: 9px 12px;
+  color: #f4f4f5;
+  font-size: 14px;
+  margin-top: 6px;
+}
+.field:focus {
+  outline: 2px solid #34d399;
+  outline-offset: 2px;
+}
+label {
+  font-size: 13px;
+  color: #a1a1aa;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #ffffff24;
+  border-radius: 5px;
+  padding: 8px 14px;
+  font-size: 13px;
+  background: #27272a;
+  cursor: pointer;
+  color: #f4f4f5;
+}
+.btn:hover {
+  background: #3f3f46;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn:focus-visible {
+  outline: 2px solid #34d399;
+  outline-offset: 3px;
+}
+.primary {
+  background: #e4e4e7;
+  color: #18181b;
+}
+.primary:hover {
+  background: white;
+}
+.error {
+  color: #fda4af;
+}
+.success {
+  color: #6ee7b7;
+}

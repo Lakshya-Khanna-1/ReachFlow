@@ -1,10 +1,12 @@
-import { EmptyPage } from "@/components/empty-page";
+import { SetupChecklist } from "@/components/setup-checklist";
 export default function Setup() {
   return (
-    <EmptyPage
-      title="Setup"
-      description="A few essentials before your first send."
-      detail="The live setup checklist arrives in Task 2. You will need a dedicated Gmail account, a local model or provider key, and your alert forwarding addresses."
-    />
+    <div className="mx-auto max-w-4xl space-y-6 p-6 md:p-10">
+      <h1 className="text-3xl font-semibold">Setup</h1>
+      <p className="text-sm text-zinc-400">
+        Connect your tools, then bring your first list.
+      </p>
+      <SetupChecklist />
+    </div>
   );
 }

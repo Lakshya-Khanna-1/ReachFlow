@@ -2,7 +2,7 @@
 
 - [x] Task 0 — Scaffold, rules and launchers
 - [x] Task 1 — Data model and core types
-- [ ] Task 2 — Settings, secrets and setup
+- [x] Task 2 — Settings, secrets and setup
 - [ ] Task 3 — LLM providers
 - [ ] Task 4 — Ingestion
 - [ ] Task 5 — Column mapping
@@ -23,3 +23,5 @@
   advisory entries remain in Drizzle CLI's dependency chain; see README.
 - Not checked: fresh Windows installation, macOS/Linux launcher, future email jobs.
 - Next: Task 1, after the user's next continue instruction.
+
+Task 2: settings, AES-GCM authentication, limits and CSRF tests pass. Real Ollama reachability needs a running local model server.
