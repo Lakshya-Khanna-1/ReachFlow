@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { WorkerWidget } from "./worker-widget";
 import { useEffect, useState } from "react";
 type Campaign = { id: string; name: string; status: string; createdAt: number };
 export function CampaignsHome() {
-  const router=useRouter();
+  const router = useRouter();
   const [items, setItems] = useState<Campaign[]>([]);
   const [name, setName] = useState("");
   const [error, setError] = useState("");
@@ -46,6 +47,7 @@ export function CampaignsHome() {
           A small list. A personal message. A little progress each day.
         </p>
       </header>
+      <WorkerWidget />
       <form className="panel flex flex-wrap items-end gap-4" onSubmit={create}>
         <label className="min-w-48 flex-1">
           New campaign name

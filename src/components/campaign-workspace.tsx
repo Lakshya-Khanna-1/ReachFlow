@@ -4,6 +4,7 @@ import { UploadPanel } from "./upload-panel";
 import { TemplatePanel } from "./template-panel";
 import { GenerationPanel } from "./generation-panel";
 import { ReviewPanel } from "./review-panel";
+import { WorkerWidget } from "./worker-widget";
 export function CampaignWorkspace({ id }: { id: string }) {
   const [data, setData] = useState<{
     campaign: { name: string };
@@ -34,6 +35,7 @@ export function CampaignWorkspace({ id }: { id: string }) {
         {error}
       </p>
       <UploadPanel campaignId={id} onDone={load} />
+      <WorkerWidget />
       <TemplatePanel campaignId={id} onChange={load} />
       <GenerationPanel campaignId={id} />
       <ReviewPanel campaignId={id} />
