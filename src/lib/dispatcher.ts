@@ -472,7 +472,7 @@ export async function dispatchStep(
   }
   setState("status", `Sending to ${reservation.contact.email}`, connection);
   try {
-    const hardFlags = [];
+    const hardFlags: string[] = [];
     if (
       (reservation.draft.body.match(/https?:\/\//gi) ?? []).length > 1 ||
       /bit\.ly|tinyurl\.com|t\.co\//i.test(reservation.draft.body)
