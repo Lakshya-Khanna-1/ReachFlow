@@ -16,11 +16,15 @@ No Docker, Redis, fabricated working controls, or extra features.
 
 - Task 0 is the empty navigation shell and process/SQLite foundation only.
 - Share a Node launcher across Windows and Unix to keep behavior consistent.
-- Require Node >=20.9 (Next.js minimum); recommend Node 24 LTS for native prebuilds.
+- Require Node >=20.19 (current build/test toolchain); recommend Node 24 LTS for native prebuilds.
 - Use system sans fonts with Inter first; no build-time font downloads.
 - A scaffold worker holds SQLite open and shuts down cleanly; email jobs arrive in later tasks.
 - Split Task 0 into reviewable documentation, application, and launcher commits.
 - Unavailable named design/security skills are followed as principles from the brief.
+- Keep the stable Drizzle migration CLI; its four moderate development-only
+  advisory entries are documented in README. Production dependencies audit clean.
+- The launcher invokes the same production entry point as npm start directly so
+  the web process owns the worker without an extra shell in the shutdown path.
 
 ## Needs from user
 
