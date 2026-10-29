@@ -1,0 +1,32 @@
+# ReachFlow project rules
+
+Build the tasks in TASKS.md in order. Finish one task, verify it, commit using
+`task-XX: summary`, update the checklist, and stop for user review.
+
+## Stack and conventions
+
+Next.js App Router, strict TypeScript, Tailwind, shadcn-style components,
+Lucide, SQLite via Drizzle and better-sqlite3. Use Zod at input boundaries.
+Run lint, typecheck and tests for each task. Bind only to 127.0.0.1.
+Keep secrets and runtime data out of Git. Never log tokens or full email bodies.
+No real sending until template and sending approval are implemented.
+No Docker, Redis, fabricated working controls, or extra features.
+
+## Decisions
+
+- Task 0 is the empty navigation shell and process/SQLite foundation only.
+- Share a Node launcher across Windows and Unix to keep behavior consistent.
+- Require Node >=20.9 (Next.js minimum); recommend Node 24 LTS for native prebuilds.
+- Use system sans fonts with Inter first; no build-time font downloads.
+- A scaffold worker holds SQLite open and shuts down cleanly; email jobs arrive in later tasks.
+- Split Task 0 into reviewable documentation, application, and launcher commits.
+- Unavailable named design/security skills are followed as principles from the brief.
+
+## Needs from user
+
+- Install Node LTS if missing.
+- Choose a dedicated Gmail, configure Google Cloud and supply OAuth Client ID/Secret.
+- Choose a local LLM/model or supply a provider API key.
+- Set alert forwarding addresses.
+- Confirm cap, business hours and timezone.
+- Run run.bat; upload a sheet, test and approve the template and sending when implemented.
