@@ -7,7 +7,7 @@
 - [x] Task 4 — Ingestion
 - [x] Task 5 — Column mapping
 - [x] Task 6 — Campaign brief and template analysis
-- [ ] Task 7 — Personalization and test run
+- [x] Task 7 — Personalization and test run
 - [ ] Task 8 — Gmail connection
 - [ ] Task 9 — Template approval and review
 - [ ] Task 10 — Scheduler and dispatcher
@@ -25,3 +25,5 @@
 - Next: Task 1, after the user's next continue instruction.
 
 Task 2: settings, AES-GCM authentication, limits and CSRF tests pass. Real Ollama reachability needs a running local model server.
+
+Task 7: restart/grounding tests pass. Live local-model output remains a user-side integration check.

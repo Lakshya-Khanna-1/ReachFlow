@@ -40,8 +40,9 @@ server.on("error", (error) => {
 });
 server.listen(port, "127.0.0.1", () => {
   console.log(`ReachFlow listening at http://localhost:${port}`);
-  worker = fork(fileURLToPath(new URL("./worker.mjs", import.meta.url)), [], {
+  worker = fork(fileURLToPath(new URL("./worker.ts", import.meta.url)), [], {
     stdio: ["inherit", "inherit", "inherit", "ipc"],
+    execArgv: ["--import", "tsx"],
   });
   worker.on("exit", (code) => {
     if (!stopping) {

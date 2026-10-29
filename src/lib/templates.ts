@@ -6,6 +6,7 @@ import {
   templateAnalyses,
   templateVersions,
   drafts,
+  jobs,
 } from "../db/schema";
 import { campaignSchema, analysisSchema, type Analysis } from "./contracts";
 import { structured, type LLMProvider } from "./llm";
@@ -43,6 +44,21 @@ export function saveTemplate(
   analysisSchema.parse(analysis);
   const c = database();
   return c.db.transaction((tx) => {
+    if (
+      tx
+        .select()
+        .from(jobs)
+        .where(
+          and(
+            eq(jobs.campaignId, campaignId),
+            inArray(jobs.status, ["running", "paused"]),
+          ),
+        )
+        .get()
+    )
+      throw new Error(
+        "Cancel the active generation job before editing its template",
+      );
     if (!tx.select().from(campaigns).where(eq(campaigns.id, campaignId)).get())
       throw new Error("Campaign not found");
     if (
