@@ -6,7 +6,7 @@
 - [x] Task 3 — LLM providers
 - [x] Task 4 — Ingestion
 - [x] Task 5 — Column mapping
-- [ ] Task 6 — Campaign brief and template analysis
+- [x] Task 6 — Campaign brief and template analysis
 - [ ] Task 7 — Personalization and test run
 - [ ] Task 8 — Gmail connection
 - [ ] Task 9 — Template approval and review
