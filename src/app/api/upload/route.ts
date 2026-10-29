@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { parseUpload, cacheUpload, readUpload, ingest } from "@/lib/ingestion";
 import { guard, jsonInput, failure } from "@/lib/http";
+import { heuristicMapping, mappingSchema } from "@/lib/mapping";
 export async function POST(request: Request) {
   try {
     guard(request);
@@ -10,6 +11,7 @@ export async function POST(request: Request) {
           campaignId: z.uuid(),
           uploadId: z.uuid(),
           selected: z.array(z.number().int().nonnegative()).min(1),
+          mappings: z.record(z.string(), mappingSchema).default({}),
         })
         .parse(await jsonInput(request));
       const all = readUpload(v.uploadId);
@@ -17,7 +19,16 @@ export async function POST(request: Request) {
         if (!all[i]) throw new Error("Invalid sheet selection");
         return all[i];
       });
-      return Response.json(ingest(v.campaignId, selected));
+      return Response.json(
+        ingest(
+          v.campaignId,
+          selected,
+          undefined,
+          [...new Set(v.selected)].map(
+            (i) => v.mappings[String(i)] ?? heuristicMapping(all[i].headers),
+          ),
+        ),
+      );
     }
     const length = Number(request.headers.get("content-length") ?? 0);
     if (length > 21 * 1024 * 1024) throw new Error("Upload exceeds 20 MB");
@@ -45,6 +56,7 @@ export async function POST(request: Request) {
         count: s.rows.length,
         blankRows: s.blankRows,
         preview: s.rows.slice(0, 5),
+        mapping: heuristicMapping(s.headers),
       })),
     });
   } catch (e) {

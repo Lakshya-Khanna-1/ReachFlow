@@ -5,7 +5,7 @@
 - [x] Task 2 — Settings, secrets and setup
 - [x] Task 3 — LLM providers
 - [x] Task 4 — Ingestion
-- [ ] Task 5 — Column mapping
+- [x] Task 5 — Column mapping
 - [ ] Task 6 — Campaign brief and template analysis
 - [ ] Task 7 — Personalization and test run
 - [ ] Task 8 — Gmail connection

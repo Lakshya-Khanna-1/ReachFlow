@@ -7,6 +7,7 @@ type Preview = {
   count: number;
   blankRows: number;
   preview: Record<string, string>[];
+  mapping: Record<string, string>;
 };
 export function UploadPanel({
   campaignId,
@@ -49,6 +50,9 @@ export function UploadPanel({
           campaignId,
           uploadId: upload?.uploadId,
           selected,
+          mappings: Object.fromEntries(
+            (upload?.sheets ?? []).map((s, i) => [String(i), s.mapping]),
+          ),
         }),
       });
       const v = await r.json();
@@ -124,6 +128,96 @@ export function UploadPanel({
                 {s.name} · {s.count} rows · {s.blankRows} blank
               </label>
               <div className="mt-3 overflow-auto">
+                <div className="mb-4 grid gap-3 sm:grid-cols-2">
+                  {s.headers.map((h) => (
+                    <label key={h}>
+                      {h}
+                      <select
+                        className="field"
+                        value={s.mapping[h]}
+                        onChange={(e) =>
+                          setUpload({
+                            ...upload,
+                            sheets: upload.sheets.map((sheet, index) =>
+                              index === i
+                                ? {
+                                    ...sheet,
+                                    mapping: {
+                                      ...sheet.mapping,
+                                      [h]: e.target.value,
+                                    },
+                                  }
+                                : sheet,
+                            ),
+                          })
+                        }
+                      >
+                        {[
+                          "email",
+                          "name",
+                          "company",
+                          "role",
+                          "website",
+                          "notes",
+                          "ignore",
+                          `custom:${h}`,
+                        ].map((v) => (
+                          <option key={v} value={v}>
+                            {v}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  ))}
+                </div>
+                <button
+                  className="btn mb-3"
+                  disabled={busy}
+                  onClick={async () => {
+                    setBusy(true);
+                    try {
+                      const r = await fetch("/api/mapping", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          uploadId: upload.uploadId,
+                          sheetIndex: i,
+                        }),
+                      });
+                      const v = await r.json();
+                      if (!r.ok) throw new Error(v.error);
+                      setUpload({
+                        ...upload,
+                        sheets: upload.sheets.map((sheet, index) =>
+                          index === i
+                            ? { ...sheet, mapping: v.mapping }
+                            : sheet,
+                        ),
+                      });
+                      setMessage(
+                        "AI suggestion ready. Review before importing.",
+                      );
+                    } catch (e) {
+                      setMessage(
+                        e instanceof Error ? e.message : "Mapping failed",
+                      );
+                    } finally {
+                      setBusy(false);
+                    }
+                  }}
+                >
+                  Suggest mapping with AI
+                </button>
+                <p className="mb-2 text-xs text-zinc-500">
+                  Mapped preview:{" "}
+                  {JSON.stringify(
+                    Object.fromEntries(
+                      s.headers
+                        .filter((h) => s.mapping[h] !== "ignore")
+                        .map((h) => [s.mapping[h], s.preview[0]?.[h] ?? ""]),
+                    ),
+                  )}
+                </p>
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr>

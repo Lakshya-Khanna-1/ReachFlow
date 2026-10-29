@@ -5,7 +5,15 @@ import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { parsedSheetSchema, type ParsedSheet } from "./parser";
 import { database } from "../db";
-import { sheets, leads, contacts, suppression, campaigns } from "../db/schema";
+import {
+  sheets,
+  leads,
+  contacts,
+  suppression,
+  campaigns,
+  columnMappings,
+} from "../db/schema";
+import { heuristicMapping, validateMapping, mapRow } from "./mapping";
 import { emailSchema } from "./contracts";
 import { eq } from "drizzle-orm";
 const uploadDir = () =>
@@ -53,6 +61,7 @@ export function ingest(
   campaignId: string,
   selected: ParsedSheet[],
   connection = database(),
+  mappings: Record<string, string>[] = [],
 ) {
   const report = {
     imported: 0,
@@ -74,7 +83,11 @@ export function ingest(
     );
     for (const s of tx.select().from(suppression).all()) known.add(s.email);
     const seen = new Set<string>();
-    for (const sheet of selected) {
+    for (const [sheetIndex, sheet] of selected.entries()) {
+      const mapping = validateMapping(
+        sheet.headers,
+        mappings[sheetIndex] ?? heuristicMapping(sheet.headers),
+      );
       const sheetId = randomUUID();
       tx.insert(sheets)
         .values({
@@ -86,8 +99,9 @@ export function ingest(
         })
         .run();
       report.blankRows += sheet.blankRows;
+      tx.insert(columnMappings).values({ sheetId, mapping }).run();
       const emailColumn =
-        sheet.headers.find((h) => /e_?mail/i.test(h)) ??
+        sheet.headers.find((h) => mapping[h] === "email") ??
         sheet.headers.find((h) =>
           sheet.rows
             .slice(0, 5)
@@ -124,7 +138,7 @@ export function ingest(
             sheetId,
             contactId: id,
             raw: row,
-            cleaned: { ...row, email },
+            cleaned: { ...mapRow(row, mapping), email },
             segment: sheet.name,
           })
           .run();
