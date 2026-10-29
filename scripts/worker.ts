@@ -7,6 +7,7 @@ import {
   setState,
 } from "../src/lib/dispatcher";
 import { workerState } from "../src/db/schema";
+import { pollReplies, replyPollDue } from "../src/lib/replies";
 let stopping = false;
 for (const signal of ["SIGINT", "SIGTERM"] as const)
   process.on(signal, () => {
@@ -74,6 +75,12 @@ async function run() {
     await Promise.all([
       loop(() => generationStep(c), 500),
       loop(() => dispatchStep(c), 1000),
+      loop(async () => {
+        if (replyPollDue(c)) {
+          setState("lastReplyAttempt", String(Date.now()), c);
+          await pollReplies(c);
+        }
+      }, 1000),
     ]);
   } finally {
     clearInterval(heartbeat);

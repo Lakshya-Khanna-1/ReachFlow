@@ -11,7 +11,7 @@
 - [x] Task 8 — Gmail connection
 - [x] Task 9 — Template approval and review
 - [x] Task 10 — Scheduler and dispatcher
-- [ ] Task 11 — Replies, alerts and dashboard
+- [x] Task 11 — Replies, alerts and dashboard
 - [ ] Task 12 — Hardening, E2E, docs and handoff
 
 ## Task 0 verification

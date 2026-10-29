@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { WorkerWidget } from "./worker-widget";
+import { ResultsDashboard } from "./results-dashboard";
 import { useEffect, useState } from "react";
 type Campaign = { id: string; name: string; status: string; createdAt: number };
 export function CampaignsHome() {
@@ -48,6 +49,7 @@ export function CampaignsHome() {
         </p>
       </header>
       <WorkerWidget />
+      <ResultsDashboard />
       <form className="panel flex flex-wrap items-end gap-4" onSubmit={create}>
         <label className="min-w-48 flex-1">
           New campaign name
