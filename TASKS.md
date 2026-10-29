@@ -8,7 +8,7 @@
 - [x] Task 5 — Column mapping
 - [x] Task 6 — Campaign brief and template analysis
 - [x] Task 7 — Personalization and test run
-- [ ] Task 8 — Gmail connection
+- [x] Task 8 — Gmail connection
 - [ ] Task 9 — Template approval and review
 - [ ] Task 10 — Scheduler and dispatcher
 - [ ] Task 11 — Replies, alerts and dashboard
@@ -27,3 +27,5 @@
 Task 2: settings, AES-GCM authentication, limits and CSRF tests pass. Real Ollama reachability needs a running local model server.
 
 Task 7: restart/grounding tests pass. Live local-model output remains a user-side integration check.
+
+Task 8: MIME/header and scope tests pass. OAuth round trip, revocation and real test delivery require user Google credentials.
