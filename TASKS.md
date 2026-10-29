@@ -3,7 +3,7 @@
 - [x] Task 0 — Scaffold, rules and launchers
 - [x] Task 1 — Data model and core types
 - [x] Task 2 — Settings, secrets and setup
-- [ ] Task 3 — LLM providers
+- [x] Task 3 — LLM providers
 - [ ] Task 4 — Ingestion
 - [ ] Task 5 — Column mapping
 - [ ] Task 6 — Campaign brief and template analysis
