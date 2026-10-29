@@ -20,13 +20,17 @@ No Docker, Redis, fabricated working controls, or extra features.
 - Share a Node launcher across Windows and Unix to keep behavior consistent.
 - Require Node >=20.19 (current build/test toolchain); recommend Node 24 LTS for native prebuilds.
 - Use system sans fonts with Inter first; no build-time font downloads.
-- A scaffold worker holds SQLite open and shuts down cleanly; email jobs arrive in later tasks.
+- One worker owns the database; independent loops run generation, dispatch and reply polling.
 - Split Task 0 into reviewable documentation, application, and launcher commits.
 - Unavailable named design/security skills are followed as principles from the brief.
 - Keep the stable Drizzle migration CLI; its four moderate development-only
   advisory entries are documented in README. Production dependencies audit clean.
 - The launcher invokes the same production entry point as npm start directly so
   the web process owns the worker without an extra shell in the shutdown path.
+- Warm-up increases by calendar day, resets after more than 14 days without a send, and uses separate dry-run history.
+- Gmail/SQLite delivery cannot be atomic. Unknown delivery is reconciled using RFC Message-ID and held uncertain rather than resent.
+- Delivery mode is recorded when a campaign is approved; changing modes requires renewed campaign approval.
+- Automated acceptance uses isolated data and a mock LLM. Real OAuth, model quality and real delivery require the user's accounts.
 
 ## Needs from user
 
@@ -35,4 +39,5 @@ No Docker, Redis, fabricated working controls, or extra features.
 - Choose a local LLM/model or supply a provider API key.
 - Set alert forwarding addresses.
 - Confirm cap, business hours and timezone.
-- Run run.bat; upload a sheet, test and approve the template and sending when implemented.
+- Double-click run.bat.
+- Upload the first sheet, run Test Run, approve the template and approve for sending.

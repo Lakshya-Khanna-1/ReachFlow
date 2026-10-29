@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { parseUpload, cacheUpload, readUpload, ingest } from "@/lib/ingestion";
-import { guard, jsonInput, failure } from "@/lib/http";
+import { guard, jsonInput, failure, limitedBody } from "@/lib/http";
 import { heuristicMapping, mappingSchema } from "@/lib/mapping";
 export async function POST(request: Request) {
   try {
@@ -32,7 +32,10 @@ export async function POST(request: Request) {
     }
     const length = Number(request.headers.get("content-length") ?? 0);
     if (length > 21 * 1024 * 1024) throw new Error("Upload exceeds 20 MB");
-    const form = await request.formData();
+    const bytes = await limitedBody(request, 21 * 1024 * 1024);
+    const form = await new Response(bytes, {
+      headers: { "Content-Type": request.headers.get("content-type") ?? "" },
+    }).formData();
     const file = form.get("file");
     const paste = form.get("paste");
     let buffer: Buffer;

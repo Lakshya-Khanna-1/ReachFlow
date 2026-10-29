@@ -52,6 +52,9 @@ export function classifyReply(
   )
     return "auto_reply";
   if (
+    /\b(?:remove me (?:from|off)|stop emailing me|stop contacting me|do not contact me|don't email me)\b/i.test(
+      text,
+    ) ||
     /(?:^|\n)\s*(?:please\s+)?(?:unsubscribe\b|remove me\b|stop (?:emailing|contacting|sending)\b|do not (?:email|contact)\b|don't (?:email|contact)\b)/i.test(
       text,
     )
@@ -370,5 +373,7 @@ export async function pollReplies(connection = database()) {
   }
 }
 export function replyPollDue(connection = database()) {
-  return Date.now() - Number(state("lastReplyAttempt", connection) || 0) > 300000;
+  return (
+    Date.now() - Number(state("lastReplyAttempt", connection) || 0) > 300000
+  );
 }

@@ -59,10 +59,15 @@ export async function GET(request: Request) {
           subject: drafts.subject,
           body: drafts.body,
           status: drafts.status,
+          contactStatus: contacts.status,
+          rawFields: sql<string>`${leads.raw}`,
+          cleanedFields: sql<string>`${leads.cleaned}`,
           flags: drafts.flags,
           sentAt: sendLog.sentAt,
           threadId: sendLog.threadId,
           dryRun: sendLog.dryRun,
+          replyType: replyEvents.type,
+          replySnippet: replyEvents.snippet,
         })
         .from(leads)
         .innerJoin(campaigns, eq(leads.campaignId, campaigns.id))
@@ -72,6 +77,7 @@ export async function GET(request: Request) {
           and(eq(drafts.leadId, leads.id), eq(drafts.isTest, false)),
         )
         .leftJoin(sendLog, eq(sendLog.draftId, drafts.id))
+        .leftJoin(replyEvents, eq(replyEvents.sendId, sendLog.id))
         .all()
         .map((row) =>
           Object.fromEntries(

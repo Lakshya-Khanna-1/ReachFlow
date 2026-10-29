@@ -56,7 +56,7 @@ export function Sidebar() {
         <div className="rounded-lg border border-white/10 p-3">
           <div className="flex items-center gap-2 text-xs text-zinc-300">
             <Radio size={13} className="text-amber-400" />
-            Setup required
+            Local workspace
           </div>
           <p className="mt-2 text-xs leading-5 text-zinc-500">
             Your workspace stays on this computer.

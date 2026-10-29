@@ -10,7 +10,9 @@ test("messy multi-sheet files remove invalid duplicates blanks and global contac
   try {
     const campaign = createCampaign({ name: "Fixture" }, c);
     ensureContact("known@example.com", c);
-    const book = XLSX.read(readFileSync("fixtures/messy-leads.xlsx"),{type:"buffer"});
+    const book = XLSX.read(readFileSync("fixtures/messy-leads.xlsx"), {
+      type: "buffer",
+    });
     const parsed = parseWorkbook(
       XLSX.write(book, { type: "buffer", bookType: "xlsx" }),
       "fixture.xlsx",
@@ -26,6 +28,18 @@ test("messy multi-sheet files remove invalid duplicates blanks and global contac
     c.sqlite.close();
   }
 });
+test("50,000 data rows parse without truncation", () => {
+  const lines = [
+    "email,name",
+    ...Array.from(
+      { length: 50000 },
+      (_, i) => `person${i}@example.com,Person ${i}`,
+    ),
+  ];
+  const parsed = parseWorkbook(Buffer.from(lines.join("\n")), "large.csv");
+  expect(parsed[0].rows).toHaveLength(50000);
+  expect(parsed[0].rows[49999].email).toBe("person49999@example.com");
+}, 20000);
 test("JSON mixed primitives and odd headers are preserved as strings", () => {
   const parsed = parseWorkbook(
     Buffer.from('[{" E-mail ":"a@example.com","Count":12,"Active":true}]'),

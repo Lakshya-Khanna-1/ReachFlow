@@ -8,6 +8,7 @@ type Status = {
   cap: number;
   dryRun: boolean;
   heartbeat: number | null;
+  lastError?: string;
 };
 export function WorkerWidget() {
   const [data, setData] = useState<Status>();
@@ -90,6 +91,7 @@ export function WorkerWidget() {
           {Math.max(0, Math.ceil((data.nextSendAt - now) / 1000))}s
         </p>
       )}
+      {data?.lastError && <p className="error text-xs">{data.lastError}</p>}
       <p role="status" className="text-xs text-zinc-400">
         {message}
       </p>

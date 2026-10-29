@@ -7,3 +7,6 @@ data/
 coverage/
 .reachflow-*.json
 *.log
+playwright-report/
+test-results/
+.test-data/

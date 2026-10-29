@@ -11,6 +11,7 @@ import {
 } from "./contracts";
 import { structured, type LLMProvider } from "./llm";
 import { config } from "./settings";
+import { mxValid } from "./mx";
 export function spamFlags(
   draft: Generated,
   min: number,
@@ -99,7 +100,9 @@ export async function generateDraft(
     llm,
   );
   const value = r.value;
+  const mxOk = await mxValid(row.email ?? "");
   const flags = [
+    ...(mxOk ? [] : ["invalid_or_unreachable_mx"]),
     ...spamFlags(
       value,
       campaign.minWords,

@@ -9,6 +9,7 @@ export function CampaignWorkspace({ id }: { id: string }) {
   const [data, setData] = useState<{
     campaign: { name: string };
     leadCount: number;
+    mappings: { sheet: string; mapping: Record<string, string> }[];
   }>();
   const [error, setError] = useState("");
   const load = useCallback(() => {
@@ -35,6 +36,23 @@ export function CampaignWorkspace({ id }: { id: string }) {
         {error}
       </p>
       <UploadPanel campaignId={id} onDone={load} />
+      {!!data?.mappings.length && (
+        <details className="panel">
+          <summary className="cursor-pointer text-sm">
+            Saved sheet mappings
+          </summary>
+          {data.mappings.map((m, i) => (
+            <div key={i} className="mt-4 text-xs">
+              <h3 className="mb-2 text-sm">{m.sheet}</h3>
+              {Object.entries(m.mapping).map(([key, value]) => (
+                <p key={key} className="py-1 text-zinc-400">
+                  {key} → {value}
+                </p>
+              ))}
+            </div>
+          ))}
+        </details>
+      )}
       <WorkerWidget />
       <TemplatePanel campaignId={id} onChange={load} />
       <GenerationPanel campaignId={id} />

@@ -18,10 +18,13 @@ const [major, minor] = process.versions.node.split(".").map(Number);
 if (major < 20 || (major === 20 && minor < 19))
   throw new Error("Install Node.js LTS (>=20.19): https://nodejs.org/");
 function npm(args) {
-  const result = spawnSync(windows ? "npm.cmd" : "npm", args, {
-    stdio: "inherit",
-    shell: windows,
-  });
+  const result = spawnSync(
+    windows ? "cmd.exe" : "npm",
+    windows ? ["/d", "/c", "npm", ...args] : args,
+    {
+      stdio: "inherit",
+    },
+  );
   if (result.error) throw result.error;
   return result.status === 0;
 }
@@ -39,6 +42,7 @@ function fingerprint() {
   for (const path of [
     "src",
     "public",
+    "docs",
     "package.json",
     "package-lock.json",
     "next.config.ts",

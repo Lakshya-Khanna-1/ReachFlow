@@ -1,6 +1,7 @@
 import { eq, count } from "drizzle-orm";
 import { database } from "@/db";
-import { campaigns, sheets, leads } from "@/db/schema";
+import { campaigns, sheets, leads, columnMappings } from "@/db/schema";
+import { z } from "zod";
 import { guard, failure } from "@/lib/http";
 export const dynamic = "force-dynamic";
 export async function GET(
@@ -10,6 +11,7 @@ export async function GET(
   try {
     guard(request);
     const { id } = await params;
+    z.uuid().parse(id);
     const db = database().db;
     const campaign = db
       .select()
@@ -20,6 +22,12 @@ export async function GET(
     return Response.json({
       campaign,
       sheets: db.select().from(sheets).where(eq(sheets.campaignId, id)).all(),
+      mappings: db
+        .select({ sheet: sheets.name, mapping: columnMappings.mapping })
+        .from(sheets)
+        .innerJoin(columnMappings, eq(sheets.id, columnMappings.sheetId))
+        .where(eq(sheets.campaignId, id))
+        .all(),
       leadCount:
         db
           .select({ n: count() })

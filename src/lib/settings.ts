@@ -17,7 +17,9 @@ export const settingsSchema = z
         (v) =>
           ["http:", "https:"].includes(new URL(v).protocol) &&
           !new URL(v).username &&
-          !new URL(v).password,
+          !new URL(v).password &&
+          !new URL(v).search &&
+          !new URL(v).hash,
         "Use HTTP(S) without embedded credentials",
       )
       .default("http://localhost:11434/v1"),
@@ -158,5 +160,6 @@ export function publicConfig() {
       googleConnected: !!getSetting("googleToken"),
     },
     googleAddress: getSetting("googleAddress") ?? "",
+    redirectUri: `http://localhost:${process.env.PORT ?? 3000}/api/auth/google/callback`,
   };
 }

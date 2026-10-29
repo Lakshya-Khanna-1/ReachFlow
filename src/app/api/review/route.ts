@@ -10,7 +10,7 @@ import {
   deterministicGrounding,
   similarity,
 } from "@/lib/generation";
-import { approveTemplate, queueCampaign } from "@/lib/review";
+import { approveTemplate, queueCampaign, updateReviewRows } from "@/lib/review";
 import { analysisSchema } from "@/lib/contracts";
 import { config } from "@/lib/settings";
 export const dynamic = "force-dynamic";
@@ -155,13 +155,9 @@ export async function POST(request: Request) {
         )
       )
         throw new Error("Regenerate failed drafts before approval");
-      db.transaction((tx) =>
-        tx
-          .update(drafts)
-          .set({ status: v.action === "approve" ? "approved" : "rejected" })
-          .where(inArray(drafts.id, v.ids))
-          .run(),
-      );
+      updateReviewRows(v.campaignId, version.id, v.ids, {
+        status: v.action === "approve" ? "approved" : "rejected",
+      });
       return Response.json({ ok: true });
     }
     if (items.length !== 1)
@@ -196,18 +192,18 @@ export async function POST(request: Request) {
         ),
         ...deterministicGrounding(content, lead.cleaned, campaign.sample),
       ];
-      db.transaction((tx) =>
-        tx
-          .update(drafts)
-          .set({
-            subject: content.subject,
-            body: content.body,
-            edited: true,
-            flags,
-            status: "attention",
-          })
-          .where(eq(drafts.id, item.id))
-          .run(),
+      updateReviewRows(
+        v.campaignId,
+        version.id,
+        v.ids,
+        {
+          subject: content.subject,
+          body: content.body,
+          edited: true,
+          flags,
+          status: "attention",
+        },
+        item.body,
       );
       return Response.json({ ok: true });
     }

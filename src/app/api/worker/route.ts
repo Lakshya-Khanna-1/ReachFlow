@@ -35,6 +35,7 @@ export async function GET(request: Request) {
       ),
       dryRun: c.dryRun,
       heartbeat: Number(state("heartbeat")) || null,
+      lastError: state("replyError") || state("lastError"),
     });
   } catch (e) {
     return failure(e);

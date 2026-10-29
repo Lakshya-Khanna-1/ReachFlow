@@ -138,7 +138,7 @@ export function SettingsForm() {
           {text("end", "Business hours end", "time")}
           {text("timezone", "Timezone (IANA name)")}
         </div>
-        {toggle("warmup", "Warm up from 5/day, adding 3 per active day")}
+        {toggle("warmup", "Warm up from 5/day, adding 3 per calendar day")}
         {toggle("weekends", "Allow weekends")}
         {toggle("dryRun", "Dry run: simulate delivery without sending email")}
         <label>

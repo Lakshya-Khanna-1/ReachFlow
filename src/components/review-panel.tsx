@@ -7,6 +7,7 @@ import {
   type ColumnDef,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { Modal } from "./modal";
 type Row = {
   draft: {
     id: string;
@@ -280,12 +281,7 @@ export function ReviewPanel({ campaignId }: { campaignId: string }) {
         {message}
       </p>
       {confirmQueue && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="queue-title"
-          className="fixed inset-0 z-50 grid place-items-center bg-black/80 p-5"
-        >
+        <Modal labelId="queue-title" onClose={() => setConfirmQueue(false)}>
           <div className="panel max-w-md space-y-5">
             <h3 id="queue-title" className="text-lg">
               Confirm {data?.mode}
@@ -311,16 +307,11 @@ export function ReviewPanel({ campaignId }: { campaignId: string }) {
               Cancel
             </button>
           </div>
-        </div>
+        </Modal>
       )}
       {drawer && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="draft-title"
-          className="fixed inset-0 z-50 flex justify-end bg-black/80"
-        >
-          <div className="h-full w-full max-w-2xl space-y-4 overflow-auto border-l border-white/10 bg-zinc-950 p-6">
+        <Modal labelId="draft-title" onClose={() => setDrawer(undefined)}>
+          <div className="space-y-4">
             <h3 id="draft-title" className="text-lg">
               {drawer.lead.email}
             </h3>
@@ -402,7 +393,7 @@ export function ReviewPanel({ campaignId }: { campaignId: string }) {
               {message}
             </p>
           </div>
-        </div>
+        </Modal>
       )}
     </section>
   );

@@ -12,7 +12,14 @@ import {
   dailyCounters,
 } from "../db/schema";
 import { queueCampaign } from "./review";
-import { reserve, complete, reconcile, setState,dispatchStep,state } from "./dispatcher";
+import {
+  reserve,
+  complete,
+  reconcile,
+  setState,
+  dispatchStep,
+  state,
+} from "./dispatcher";
 import { settingsSchema } from "./settings";
 function fixture(dryRun = false) {
   const c = openDatabase(":memory:");
@@ -154,4 +161,45 @@ test("dry-run does not consume real contact history or real daily quota", () => 
     c.sqlite.close();
   }
 });
-test("dispatcher becomes idle after approved queue is exhausted",async()=>{const c=fixture(true);const cfg=settingsSchema.parse({dryRun:true,warmup:false,timezone:"UTC",footer:""});try{for(let i=0;i<3;i++)expect(await dispatchStep(c,cfg,new Date(Date.parse("2026-10-30T11:00:00Z")+i*181000),async()=>{throw new Error("Never call real transport in dry run");},async()=>true,"")).toBe(true);await dispatchStep(c,cfg,new Date("2026-10-30T11:15:00Z"),undefined,undefined,"");expect(state("status",c)).toContain("Idle");expect(c.db.select().from(sendLog).all().every(l=>l.status==="dry_run")).toBe(true);}finally{c.sqlite.close();}});
+test("dispatcher becomes idle after approved queue is exhausted", async () => {
+  const c = fixture(true);
+  const cfg = settingsSchema.parse({
+    dryRun: true,
+    warmup: false,
+    timezone: "UTC",
+    footer: "",
+  });
+  try {
+    for (let i = 0; i < 3; i++)
+      expect(
+        await dispatchStep(
+          c,
+          cfg,
+          new Date(Date.parse("2026-10-30T11:00:00Z") + i * 181000),
+          async () => {
+            throw new Error("Never call real transport in dry run");
+          },
+          async () => true,
+          "",
+        ),
+      ).toBe(true);
+    await dispatchStep(
+      c,
+      cfg,
+      new Date("2026-10-30T11:15:00Z"),
+      undefined,
+      undefined,
+      "",
+    );
+    expect(state("status", c)).toContain("Idle");
+    expect(
+      c.db
+        .select()
+        .from(sendLog)
+        .all()
+        .every((l) => l.status === "dry_run"),
+    ).toBe(true);
+  } finally {
+    c.sqlite.close();
+  }
+});

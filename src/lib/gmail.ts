@@ -33,7 +33,11 @@ export class GmailError extends Error {
   }
 }
 export function gmailFailure(error: unknown): never {
-  if(error instanceof GmailError){if(error.status===401||error.status===403)putSetting("pauseReason",error.message);throw error;}
+  if (error instanceof GmailError) {
+    if (error.status === 401 || error.status === 403)
+      putSetting("pauseReason", error.message);
+    throw error;
+  }
   const parsed = z
     .object({
       code: z.union([z.number(), z.string()]).optional(),

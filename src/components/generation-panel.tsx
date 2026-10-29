@@ -13,6 +13,7 @@ type TestResult = {
 };
 export function GenerationPanel({ campaignId }: { campaignId: string }) {
   const [results, setResults] = useState<TestResult[]>([]);
+  const [original, setOriginal] = useState("");
   const [job, setJob] = useState<{
     status: string;
     completed: number;
@@ -30,6 +31,10 @@ export function GenerationPanel({ campaignId }: { campaignId: string }) {
         const r = await fetch(`/api/generation?campaignId=${campaignId}`);
         const v = await r.json();
         if (active && v.job) setJob(v.job);
+        if (active && v.results) {
+          setResults(v.results);
+          setOriginal(v.sample ?? "");
+        }
       } catch {}
     }
     void poll();
@@ -50,6 +55,7 @@ export function GenerationPanel({ campaignId }: { campaignId: string }) {
       const v = await r.json();
       if (!r.ok) throw new Error(v.error);
       if (v.results) setResults(v.results);
+      if (v.sample) setOriginal(v.sample);
       if (v.job) setJob(v.job);
       setMessage(
         action === "test"
@@ -103,6 +109,10 @@ export function GenerationPanel({ campaignId }: { campaignId: string }) {
           className="grid gap-5 border-t border-white/10 pt-5 md:grid-cols-2"
         >
           <div>
+            <h3 className="mb-2 text-xs text-zinc-500">ORIGINAL SAMPLE</h3>
+            <p className="mb-5 whitespace-pre-wrap text-sm text-zinc-400">
+              {original}
+            </p>
             <h3 className="mb-2 text-xs text-zinc-500">SOURCE ROW</h3>
             <pre className="whitespace-pre-wrap text-xs text-zinc-400">
               {JSON.stringify(r.lead.cleaned, null, 2)}
@@ -111,7 +121,18 @@ export function GenerationPanel({ campaignId }: { campaignId: string }) {
           <div>
             <h3 className="font-medium">{r.result.subject}</h3>
             <p className="mt-3 whitespace-pre-wrap text-sm leading-6">
-              {r.result.body}
+              {r.result.body.split(/(\s+)/).map((word, i) => (
+                <span
+                  key={i}
+                  className={
+                    original.toLowerCase().includes(word.toLowerCase())
+                      ? undefined
+                      : "text-emerald-300"
+                  }
+                >
+                  {word}
+                </span>
+              ))}
             </p>
             <p className="mt-3 text-xs text-amber-300">
               {r.result.flags.join(", ") || "Checks passed"}

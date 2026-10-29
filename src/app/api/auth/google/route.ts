@@ -5,7 +5,10 @@ import { putSetting } from "@/lib/settings";
 export async function POST(request: Request) {
   try {
     guard(request);
-    if(!request.headers.get("host")?.startsWith("localhost:"))throw new Error("Open ReachFlow at http://localhost:3000 to connect Google; the OAuth callback uses localhost.");
+    if (!request.headers.get("host")?.startsWith("localhost:"))
+      throw new Error(
+        "Open ReachFlow at http://localhost:3000 to connect Google; the OAuth callback uses localhost.",
+      );
     const state = randomBytes(32).toString("hex");
     putSetting(
       "oauthState",

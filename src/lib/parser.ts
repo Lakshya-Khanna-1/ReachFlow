@@ -33,7 +33,7 @@ export function parseWorkbook(buffer: Buffer, name: string): ParsedSheet[] {
     });
   let total = 0;
   return book.SheetNames.map((name) => {
-    const range = book.Sheets[name]["!ref"];
+    const range = book.Sheets[name]["!fullref"] ?? book.Sheets[name]["!ref"];
     if (range && XLSX.utils.decode_range(range).e.r > 50001)
       throw new Error("Maximum 50,000 rows per upload");
     const matrix = XLSX.utils.sheet_to_json<unknown[]>(book.Sheets[name], {
@@ -42,9 +42,18 @@ export function parseWorkbook(buffer: Buffer, name: string): ParsedSheet[] {
       raw: false,
       blankrows: true,
     });
-    let headerIndex = matrix.findIndex((row) =>
-      row.some((v) => /e.?mail|company|name|contact|website/i.test(String(v))),
-    );
+    const scores = matrix
+      .slice(0, 20)
+      .map(
+        (row) =>
+          row.filter((v) =>
+            /^(e.?mail(?: address)?|full.?name|name|company|business|person|contact(?: email)?|website|role|notes)$/i.test(
+              String(v).trim(),
+            ),
+          ).length,
+      );
+    let headerIndex =
+      Math.max(...scores) > 0 ? scores.indexOf(Math.max(...scores)) : -1;
     if (headerIndex < 0)
       headerIndex = matrix.findIndex(
         (r) => r.filter((v) => String(v).trim()).length >= 2,

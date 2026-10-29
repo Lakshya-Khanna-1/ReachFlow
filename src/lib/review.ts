@@ -3,6 +3,43 @@ import { database } from "../db";
 import { campaigns, drafts, templateVersions, workerState } from "../db/schema";
 import { currentVersion } from "./generation";
 import { config } from "./settings";
+export function updateReviewRows(
+  campaignId: string,
+  versionId: string,
+  ids: string[],
+  values: Partial<typeof drafts.$inferInsert>,
+  expectedBody?: string,
+) {
+  const c = database();
+  return c.db.transaction((tx) => {
+    const version = currentVersion(campaignId, c);
+    if (version.id !== versionId)
+      throw new Error("Template changed. Reload before editing drafts");
+    if (values.status === "approved" && !version.approved)
+      throw new Error("Approve the template first");
+    const rows = tx
+      .select()
+      .from(drafts)
+      .where(
+        and(
+          inArray(drafts.id, ids),
+          eq(drafts.versionId, versionId),
+          eq(drafts.isTest, false),
+        ),
+      )
+      .all();
+    if (
+      rows.length !== ids.length ||
+      rows.some(
+        (d) =>
+          ["sending", "sent", "uncertain"].includes(d.status) ||
+          (expectedBody !== undefined && d.body !== expectedBody),
+      )
+    )
+      throw new Error("Draft changed or is sending. Reload before editing");
+    tx.update(drafts).set(values).where(inArray(drafts.id, ids)).run();
+  });
+}
 export function approveTemplate(campaignId: string, connection = database()) {
   const v = currentVersion(campaignId, connection);
   if (!v.testedAt)

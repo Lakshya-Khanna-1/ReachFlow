@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { resolveMx } from "node:dns/promises";
+import { mxValid } from "./mx";
 import { and, eq, sql, inArray } from "drizzle-orm";
 import { database } from "../db";
 import {
@@ -17,7 +17,7 @@ import {
 import { config, getSetting, type AppSettings } from "./settings";
 import { connectedAddress, mime, sendRaw, findSent, GmailError } from "./gmail";
 import { inHours, nextWindow, localParts, warmupCap, jitter } from "./schedule";
-import { emailSchema } from "./contracts";
+export { mxValid } from "./mx";
 
 export function state(key: string, connection = database()) {
   return (
@@ -36,16 +36,6 @@ export function setState(key: string, value: string, connection = database()) {
       .onConflictDoUpdate({ target: workerState.key, set: { value } })
       .run(),
   );
-}
-export async function mxValid(email: string) {
-  const valid = emailSchema.safeParse(email);
-  if (!valid.success) return false;
-  try {
-    const records = await resolveMx(valid.data.split("@")[1]);
-    return records.some((r) => !!r.exchange && r.exchange !== ".");
-  } catch {
-    return false;
-  }
 }
 export function reserve(c: AppSettings, now: Date, connection = database()) {
   const db = connection.db;
@@ -473,6 +463,8 @@ export async function dispatchStep(
   setState("status", `Sending to ${reservation.contact.email}`, connection);
   try {
     const hardFlags: string[] = [];
+    if (/[\r\n]/.test(reservation.draft.subject + c.senderName))
+      hardFlags.push("invalid_header");
     if (
       (reservation.draft.body.match(/https?:\/\//gi) ?? []).length > 1 ||
       /bit\.ly|tinyurl\.com|t\.co\//i.test(reservation.draft.body)
@@ -539,6 +531,24 @@ export async function dispatchStep(
           .run();
       });
       return true;
+    }
+    if (
+      !c.dryRun &&
+      (state("paused", connection) === "true" ||
+        getSetting("pauseReason") ||
+        config().dryRun !== c.dryRun)
+    ) {
+      db.transaction((tx) => {
+        tx.update(sendLog)
+          .set({ status: "failed", error: "Paused before delivery" })
+          .where(eq(sendLog.id, reservation.log.id))
+          .run();
+        tx.update(drafts)
+          .set({ status: "approved" })
+          .where(eq(drafts.id, reservation.draft.id))
+          .run();
+      });
+      return false;
     }
     const sent = c.dryRun
       ? {

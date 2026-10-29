@@ -2,12 +2,16 @@
 import { useEffect, useState } from "react";
 export function GooglePanel() {
   const [address, setAddress] = useState("");
+  const [redirect, setRedirect] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   useEffect(() => {
     fetch("/api/settings")
       .then((r) => r.json())
-      .then((v) => setAddress(v.googleAddress ?? ""))
+      .then((v) => {
+        setAddress(v.googleAddress ?? "");
+        setRedirect(v.redirectUri ?? "");
+      })
       .catch(() => {});
   }, []);
   async function connect() {
@@ -41,6 +45,10 @@ export function GooglePanel() {
   return (
     <section className="panel space-y-4">
       <h2 className="text-lg">Gmail connection</h2>
+      <label>
+        Authorized redirect URI
+        <input className="field" readOnly value={redirect} />
+      </label>
       <p className="text-sm text-zinc-400">
         {address
           ? `Connected: ${address}`
