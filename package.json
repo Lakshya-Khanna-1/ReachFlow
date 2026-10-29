@@ -16,6 +16,8 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
+    "@tanstack/react-table": "^9.3.1",
+    "@tanstack/react-virtual": "^3.14.24",
     "better-sqlite3": "^12.4.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

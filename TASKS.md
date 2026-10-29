@@ -9,7 +9,7 @@
 - [x] Task 6 — Campaign brief and template analysis
 - [x] Task 7 — Personalization and test run
 - [x] Task 8 — Gmail connection
-- [ ] Task 9 — Template approval and review
+- [x] Task 9 — Template approval and review
 - [ ] Task 10 — Scheduler and dispatcher
 - [ ] Task 11 — Replies, alerts and dashboard
 - [ ] Task 12 — Hardening, E2E, docs and handoff

@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { UploadPanel } from "./upload-panel";
 import { TemplatePanel } from "./template-panel";
 import { GenerationPanel } from "./generation-panel";
+import { ReviewPanel } from "./review-panel";
 export function CampaignWorkspace({ id }: { id: string }) {
   const [data, setData] = useState<{
     campaign: { name: string };
@@ -35,6 +36,7 @@ export function CampaignWorkspace({ id }: { id: string }) {
       <UploadPanel campaignId={id} onDone={load} />
       <TemplatePanel campaignId={id} onChange={load} />
       <GenerationPanel campaignId={id} />
+      <ReviewPanel campaignId={id} />
     </div>
   );
 }
