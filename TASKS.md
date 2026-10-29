@@ -4,7 +4,7 @@
 - [x] Task 1 — Data model and core types
 - [x] Task 2 — Settings, secrets and setup
 - [x] Task 3 — LLM providers
-- [ ] Task 4 — Ingestion
+- [x] Task 4 — Ingestion
 - [ ] Task 5 — Column mapping
 - [ ] Task 6 — Campaign brief and template analysis
 - [ ] Task 7 — Personalization and test run
