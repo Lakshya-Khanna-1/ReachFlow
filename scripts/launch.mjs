@@ -92,6 +92,19 @@ if (
     );
   writeFileSync(stampFile, lockHash());
 }
+const sqliteReady = () =>
+  spawnSync(
+    process.execPath,
+    ["-e", "const D=require('better-sqlite3');new D(':memory:').close()"],
+    { stdio: "ignore" },
+  ).status === 0;
+if (!sqliteReady()) {
+  console.log("Repairing SQLite for the current Node.js version…");
+  if (!npm(["rebuild", "better-sqlite3"]) || !sqliteReady())
+    throw new Error(
+      "SQLite could not load. Install Node 24 LTS, then run run.bat again.",
+    );
+}
 const buildStamp = ".reachflow-build.json";
 if (
   !existsSync(".next/BUILD_ID") ||

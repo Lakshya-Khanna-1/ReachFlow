@@ -1,7 +1,7 @@
 import { randomBytes, createHash } from "node:crypto";
 import { guard, failure } from "@/lib/http";
 import { oauth, GOOGLE_SCOPES } from "@/lib/gmail";
-import { putSetting } from "@/lib/settings";
+import { putSetting, getSetting } from "@/lib/settings";
 export async function POST(request: Request) {
   try {
     guard(request);
@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       }),
     );
     const url = oauth().generateAuthUrl({
+      login_hint: getSetting("googleLoginHint") || undefined,
       access_type: "offline",
       prompt: "consent",
       scope: GOOGLE_SCOPES,

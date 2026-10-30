@@ -44,3 +44,10 @@ All implementation tasks are complete. Account-dependent acceptance checks remai
 - Production dependency audit: zero known vulnerabilities. Four moderate development-only advisory entries remain documented in README.
 - No real messages sent. Real Google OAuth/revocation, real local model quality, and 2–3 real deliveries to user-owned addresses need user credentials and account setup.
 - Handoff: follow README → What I need from you. Never paste tokens or API keys into Git or chat; enter them in Settings.
+
+## Setup repair — October 30, 2026
+
+- Rebuilt better-sqlite3 for the user's installed Node v26.13.0 (ABI 147); verified a real SQLite connection, worker health, lint, strict typecheck, all 30 unit tests and production build.
+- Added a startup binary-load check with an explicit SQLite rebuild fallback, covering an ABI mismatch even when install stamps appear current.
+- OAuth now uses a locally saved sender login hint. Personal sender/alert settings remain in the ignored database, not source control.
+- Installed Ollama and a small local model for the 8 GB machine; connection and real JSON inference passed. Real Gmail authorization/delivery still awaits the user's Google Cloud credentials.
