@@ -51,3 +51,10 @@ All implementation tasks are complete. Account-dependent acceptance checks remai
 - Added a startup binary-load check with an explicit SQLite rebuild fallback, covering an ABI mismatch even when install stamps appear current.
 - OAuth now uses a locally saved sender login hint. Personal sender/alert settings remain in the ignored database, not source control.
 - Installed Ollama and a small local model for the 8 GB machine; connection and real JSON inference passed. Real Gmail authorization/delivery still awaits the user's Google Cloud credentials.
+
+## First outreach setup — November 1, 2026
+
+- [x] Add bounded local writing examples to generation without changing model weights or including private examples in Git.
+- [x] Respect workbook delivery marks during reimport, including uncertain deliveries.
+- [x] Verified lint, strict typecheck, all 32 unit tests and production build for these changes.
+- Account authorization and batch results are recorded in the local app and workbook, not source control.

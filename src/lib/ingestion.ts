@@ -125,7 +125,17 @@ export function ingest(
           continue;
         }
         seen.add(email);
-        if (known.has(email)) {
+        if (
+          known.has(email) ||
+          [
+            "sent",
+            "sending",
+            "uncertain",
+            "replied",
+            "bounced",
+            "suppressed",
+          ].includes(row.reachflow_status?.trim().toLowerCase())
+        ) {
           report.alreadyContacted++;
           continue;
         }

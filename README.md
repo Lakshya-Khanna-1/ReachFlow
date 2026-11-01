@@ -72,13 +72,15 @@ Four moderate advisory entries remain in the stable Drizzle migration CLI's lega
 4. Configure the OAuth consent screen: user type **External**, add app name and support email.
 5. Add scopes: `gmail.send` and `gmail.readonly`.
 6. Add the dedicated Gmail as a **test user**.
-7. **Publish the app to "In production"** (no verification needed for personal use). This prevents refresh tokens expiring every 7 days.
+7. For testing, keep the app in **Testing** and use the dedicated test user. Gmail refresh tokens for external apps in Testing normally expire after seven days, requiring reconnection. Production publishing and verification requirements depend on Google's policies and your use case; publishing alone does not guarantee approval. See [Google's OAuth token-expiration documentation](https://developers.google.com/identity/protocols/oauth2#expiration).
 8. Credentials → Create OAuth client ID → **Web application**. Authorized redirect URI: `http://localhost:3000/api/auth/google/callback`.
 9. Copy Client ID and Client Secret into ReachFlow → Settings → Google.
 10. Click **Connect Google account**. On the "Google hasn't verified this app" screen click **Advanced → Continue**. Allow both permissions.
 11. Done. ReachFlow stores the refresh token encrypted. Note: Google's menu names change occasionally.
 
-Google controls actual consent, test-user and verification requirements; account and policy restrictions may differ. The guide above is reproduced from the supplied build brief.
+Google controls actual consent, test-user and verification requirements; account and policy restrictions may differ.
+
+Human-reviewed writing examples can be saved locally in the `writingExamples` setting (up to 15 category/subject/body examples). Generation selects the two closest categories to keep small local models within their context budget. Examples guide wording; they do not fine-tune the model or replace grounding and review. They stay in the ignored local database. Imported workbooks with a `ReachFlow_Status` column skip recipients marked Sent, Sending, Uncertain, Replied, Bounced or Suppressed, in addition to the database's existing duplicate protection.
 
 ## What I need from you
 
