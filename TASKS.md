@@ -58,3 +58,4 @@ All implementation tasks are complete. Account-dependent acceptance checks remai
 - [x] Respect workbook delivery marks during reimport, including uncertain deliveries.
 - [x] Verified lint, strict typecheck, all 32 unit tests and production build for these changes.
 - Account authorization and batch results are recorded in the local app and workbook, not source control.
+- [x] Real Gmail rewrote the submitted Message-ID. Added bounded Sent-header reconciliation using the retained ReachFlow key, with missing/ambiguous matches held uncertain. Verified against a real sent message; lint, strict typecheck and all 34 unit tests passed.

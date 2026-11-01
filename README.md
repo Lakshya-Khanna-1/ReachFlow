@@ -99,3 +99,5 @@ Real Google OAuth/revocation, real local-model quality and delivery to 2–3 add
 On Windows with Node 24.22.1: lint, strict typecheck, 30 unit tests, production build and 2 headless E2E tests passed. A fresh source snapshot with no dependencies, environment, build or data completed the run.bat install/build/start flow, including healthy worker heartbeat, dry-run defaults, a custom-port OAuth redirect and a loopback-only listener. Node/npm were supplied by the agent runtime and a temporary npm shim; a separate clean Windows installation remains untested. The in-app dashboard was visually checked after startup.
 
 An alert with an uncertain network result is also checked in Sent without automatic resend, to avoid duplicate alerts.
+
+Gmail can rewrite the submitted RFC Message-ID. Reconciliation first searches that identifier, then checks the retained `X-ReachFlow-Key` header on up to 200 Sent messages from the last 30 days. Multiple matches or an older missing match remain uncertain and are never automatically resent. This fallback was verified against a real sent message.

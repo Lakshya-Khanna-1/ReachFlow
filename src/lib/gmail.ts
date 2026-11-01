@@ -164,18 +164,74 @@ export async function sendRaw(raw: string) {
     return gmailFailure(e);
   }
 }
+type SentMessage = { id: string; threadId: string };
+type SentMailbox = {
+  search: (
+    query: string,
+    pageToken?: string,
+  ) => Promise<{
+    messages: SentMessage[];
+    nextPageToken?: string;
+  }>;
+  keyHeader: (id: string) => Promise<string>;
+};
+
+export async function locateSentMessage(key: string, mailbox: SentMailbox) {
+  const original = await mailbox.search(
+    `in:sent rfc822msgid:${key}@reachflow.local`,
+  );
+  if (original.messages.length) {
+    return original.messages.length === 1 ? original.messages[0] : null;
+  }
+  const matches: SentMessage[] = [];
+  let pageToken: string | undefined;
+  // shortcut: scan at most 200 recent Sent headers; older unconfirmed sends stay uncertain.
+  for (let page = 0; page < 2; page++) {
+    const result = await mailbox.search("in:sent newer_than:30d", pageToken);
+    for (let start = 0; start < result.messages.length; start += 10) {
+      const batch = result.messages.slice(start, start + 10);
+      const keys = await Promise.all(batch.map((m) => mailbox.keyHeader(m.id)));
+      matches.push(...batch.filter((_, i) => keys[i] === key));
+    }
+    pageToken = result.nextPageToken;
+    if (!pageToken) break;
+  }
+  return matches.length === 1 ? matches[0] : null;
+}
+
 export async function findSent(key: string) {
   try {
     const api = gmail();
-    const response = await api.users.messages.list(
-      {
-        userId: "me",
-        q: `in:sent rfc822msgid:${key}@reachflow.local`,
-        maxResults: 10,
+    return await locateSentMessage(key, {
+      async search(q, pageToken) {
+        const response = await api.users.messages.list(
+          { userId: "me", q, pageToken, maxResults: 100 },
+          { retry: false, timeout: 15000 },
+        );
+        return {
+          messages: (response.data.messages ?? [])
+            .filter((m) => m.id && m.threadId)
+            .map((m) => ({ id: m.id!, threadId: m.threadId! })),
+          nextPageToken: response.data.nextPageToken ?? undefined,
+        };
       },
-      { retry: false, timeout: 15000 },
-    );
-    return response.data.messages?.find((m) => m.id && m.threadId) ?? null;
+      async keyHeader(id) {
+        const response = await api.users.messages.get(
+          {
+            userId: "me",
+            id,
+            format: "metadata",
+            metadataHeaders: ["X-ReachFlow-Key"],
+          },
+          { retry: false, timeout: 15000 },
+        );
+        return (
+          response.data.payload?.headers?.find(
+            (h) => h.name?.toLowerCase() === "x-reachflow-key",
+          )?.value ?? ""
+        );
+      },
+    });
   } catch (e) {
     return gmailFailure(e);
   }
