@@ -28,7 +28,7 @@ export const analysisSchema = z.object({
   ),
 });
 export const generatedSchema = z.object({
-  subject: z.string().min(1).max(200),
+  subject: z.string().min(1).max(70),
   body: z.string().min(1).max(12000),
   used_fields: z.array(z.string()),
   confidence: z.number().min(0).max(1),

@@ -87,8 +87,10 @@ export async function generateDraft(
   llm?: LLMProvider,
 ) {
   const r = await structured(
-    generatedSchema,
-    "Personalize one first-contact email. Return {subject,body,used_fields:[],confidence:0..1,notes}. Use ONLY recipient facts from row. Preserve fixed phrases verbatim. Thin data: use neutral sample wording. Never claim visits, achievements or familiarity. Writing examples demonstrate style only: never copy their recipient names or facts. Follow the current brief and row for the offer and recipient. No placeholders or opt-out footer in output.",
+    generatedSchema.extend({
+      used_fields: z.array(z.enum(Object.keys(row))),
+    }),
+    `Personalize one first-contact email. Return {subject,body,used_fields:[],confidence:0..1,notes}. Keep subject at most 70 characters. Body must be ${campaign.minWords}–${campaign.maxWords} words; aim for ${Math.round((campaign.minWords + campaign.maxWords) / 2)}. Use ONLY recipient facts from row. Preserve the analysis core_message and cta, and fixed phrases verbatim. Thin data: use neutral sample wording. Never claim visits, achievements or familiarity. Writing examples demonstrate concise, formal style only: never copy their recipient names or facts. Follow the current brief and row for the offer and recipient. No placeholders or opt-out footer in output.`,
     JSON.stringify({
       brief: campaign.brief,
       sample: campaign.sample,

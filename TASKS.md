@@ -59,3 +59,5 @@ All implementation tasks are complete. Account-dependent acceptance checks remai
 - [x] Verified lint, strict typecheck, all 32 unit tests and production build for these changes.
 - Account authorization and batch results are recorded in the local app and workbook, not source control.
 - [x] Real Gmail rewrote the submitted Message-ID. Added bounded Sent-header reconciliation using the retained ReachFlow key, with missing/ambiguous matches held uncertain. Verified against a real sent message; lint, strict typecheck and all 34 unit tests passed.
+- [x] Real local-model testing exposed missing draft metadata. Added schema-guided local output, validated fallbacks and specific field feedback; retained review flags for word count and factual grounding. Real example-guided JSON drafting passed after reloading the local model.
+- [x] Final local-provider fixes passed lint, strict typecheck, all 38 unit tests and the production build. Source-field metadata is constrained to the imported row's actual keys.

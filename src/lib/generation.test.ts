@@ -64,6 +64,11 @@ test("independent verifier flags unsupported recipient claims", async () => {
       JSON.stringify({
         ...draft,
         body: "Your business won an award.",
+        used_fields: ["Doctor_Name"],
+      }),
+      JSON.stringify({
+        ...draft,
+        body: "Your business won an award.",
         used_fields: ["company"],
       }),
       JSON.stringify({
@@ -80,5 +85,6 @@ test("independent verifier flags unsupported recipient claims", async () => {
     ]),
   );
   expect(result.flags).toContain("grounding");
+  expect(result.used_fields).toEqual(["company"]);
   expect(result.body).toContain("Reply unsubscribe");
 });

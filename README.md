@@ -82,6 +82,8 @@ Google controls actual consent, test-user and verification requirements; account
 
 Human-reviewed writing examples can be saved locally in the `writingExamples` setting (up to 15 category/subject/body examples). Generation selects the two closest categories to keep small local models within their context budget. Examples guide wording; they do not fine-tune the model or replace grounding and review. They stay in the ignored local database. Imported workbooks with a `ReachFlow_Status` column skip recipients marked Sent, Sending, Uncertain, Replied, Bounced or Suppressed, in addition to the database's existing duplicate protection.
 
+Local providers receive the required JSON schema as well as the writing prompt. Providers that reject schema mode or return an empty result fall back to JSON-object mode, then plain output with the same Zod validation. Retries identify invalid fields without copying email content into diagnostics or inventing missing confidence. Generated subjects are limited to 70 characters; short/long bodies still require review.
+
 ## What I need from you
 
 - [ ] Install Node LTS if it is missing.
