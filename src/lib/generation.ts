@@ -10,8 +10,9 @@ import {
   type Analysis,
 } from "./contracts";
 import { structured, type LLMProvider } from "./llm";
-import { config } from "./settings";
+import { config, getSetting } from "./settings";
 import { mxValid } from "./mx";
+import { selectWritingExamples } from "./writing-examples";
 export function spamFlags(
   draft: Generated,
   min: number,
@@ -87,7 +88,7 @@ export async function generateDraft(
 ) {
   const r = await structured(
     generatedSchema,
-    "Personalize one first-contact email. Return {subject,body,used_fields:[],confidence:0..1,notes}. Use ONLY recipient facts from row. Preserve fixed phrases verbatim. Thin data: use neutral sample wording. Never claim visits, achievements or familiarity. No placeholders or opt-out footer in output.",
+    "Personalize one first-contact email. Return {subject,body,used_fields:[],confidence:0..1,notes}. Use ONLY recipient facts from row. Preserve fixed phrases verbatim. Thin data: use neutral sample wording. Never claim visits, achievements or familiarity. Writing examples demonstrate style only: never copy their recipient names or facts. Follow the current brief and row for the offer and recipient. No placeholders or opt-out footer in output.",
     JSON.stringify({
       brief: campaign.brief,
       sample: campaign.sample,
@@ -96,6 +97,10 @@ export async function generateDraft(
       maxWords: campaign.maxWords,
       analysis,
       row,
+      writingExamples: selectWritingExamples(
+        getSetting("writingExamples"),
+        row,
+      ),
     }),
     llm,
   );
